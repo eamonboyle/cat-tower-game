@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Tower</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas" tabindex="0" aria-label="Game"></canvas>
+      <div id="hud">
+        <div class="hud-top">
+          <div class="score-block">
+            <span class="star" aria-hidden="true">★</span>
+            <span id="hud-score">0</span>
+          </div>
+          <div class="best-block">Best <span id="hud-best">0</span></div>
+          <button type="button" id="btn-pause" class="icon-btn" aria-label="Pause">❚❚</button>
+        </div>
+      </div>
+      <div id="pause-overlay" class="overlay" hidden>
+        <div class="panel">
+          <h2>Paused</h2>
+          <button type="button" id="btn-resume" class="panel-btn">Resume</button>
+          <p class="hint">Escape to resume</p>
+        </div>
+      </div>
+      <div id="gameover" class="overlay" hidden>
+        <div class="panel gameover-panel">
+          <div class="hazard-strip" aria-hidden="true"></div>
+          <h2>Game over</h2>
+          <p class="go-line">Score <span id="go-score">0</span></p>
+          <p class="go-line">Best <span id="go-best">0</span></p>
+          <button type="button" id="go-restart" class="panel-btn">Play again</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
