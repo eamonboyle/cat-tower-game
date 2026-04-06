@@ -53,6 +53,18 @@ export function spawnLandBurst(
   bursts.push({ t: 0, points: pts, life: 0.55, vel });
 }
 
+export function clearAllParticles(scene: Scene): void {
+  for (let i = bursts.length - 1; i >= 0; i--) {
+    const b = bursts[i];
+    const g = b.points.geometry as BufferGeometry;
+    const mat = b.points.material as PointsMaterial;
+    scene.remove(b.points);
+    g.dispose();
+    mat.dispose();
+    bursts.splice(i, 1);
+  }
+}
+
 export function updateParticles(scene: Scene, dt: number): void {
   for (let i = bursts.length - 1; i >= 0; i--) {
     const b = bursts[i];

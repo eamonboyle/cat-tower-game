@@ -50,3 +50,9 @@
 - [x] Difficulty ramp; centered bonus + combo scoring; score toasts
 - [x] PCF soft shadows, fog, parallax background, toon cats + eyes/whiskers
 - [x] Nunito typography, score pills, pause SVG, hint bar, pause restart, safe-area CSS
+
+## Phase 8 — Main menu
+
+- [x] Full-screen main menu with hero (`public/menu-hero.svg`), Play, best score, mute
+- [x] Defer `Game.restart()` / `tick()` until Play; `#app.app--menu` hides gameplay HUD
+- [x] `Game.start()`, `hasStarted`, input/menu guards

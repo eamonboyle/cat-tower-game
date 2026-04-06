@@ -15,10 +15,12 @@ export class HUD {
   private newBestEl: HTMLElement;
   private toastEl: HTMLElement;
   private hintBar: HTMLElement;
+  private menuBestEl: HTMLElement | null;
   private canvas: HTMLCanvasElement;
   private onRestart?: () => void;
   private onPauseToggle?: () => void;
   private onMuteToggle?: (muted: boolean) => void;
+  private onQuitToMainMenu?: () => void;
 
   constructor(root: HTMLElement) {
     this.root = root;
@@ -31,7 +33,20 @@ export class HUD {
     this.newBestEl = root.querySelector('#go-newbest')!;
     this.toastEl = root.querySelector('#score-toast')!;
     this.hintBar = root.querySelector('#hint-bar')!;
+    this.menuBestEl = root.querySelector('#menu-best');
     this.canvas = root.querySelector('#game-canvas')!;
+
+    root.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.btn-mute');
+      if (!btn) return;
+      e.stopPropagation();
+      const next = btn.getAttribute('aria-pressed') !== 'true';
+      this.root.querySelectorAll('.btn-mute').forEach((b) => {
+        b.setAttribute('aria-pressed', String(next));
+        b.textContent = next ? '🔇' : '🔊';
+      });
+      this.onMuteToggle?.(next);
+    });
 
     const pauseBtn = root.querySelector('#btn-pause');
     pauseBtn?.addEventListener('click', (e) => {
@@ -51,19 +66,16 @@ export class HUD {
       this.onRestart?.();
     });
 
+    const pauseMainMenu = root.querySelector('#btn-pause-mainmenu');
+    pauseMainMenu?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.onQuitToMainMenu?.();
+    });
+
     const goRestart = root.querySelector('#go-restart');
     goRestart?.addEventListener('click', (e) => {
       e.stopPropagation();
       this.onRestart?.();
-    });
-
-    const muteBtn = root.querySelector('#btn-mute');
-    muteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const next = muteBtn.getAttribute('aria-pressed') !== 'true';
-      muteBtn.setAttribute('aria-pressed', String(next));
-      muteBtn.textContent = next ? '🔇' : '🔊';
-      this.onMuteToggle?.(next);
     });
 
     const hintDismiss = root.querySelector('#hint-dismiss');
@@ -81,18 +93,20 @@ export class HUD {
     onRestart: () => void,
     onPauseToggle: () => void,
     onMuteToggle: (muted: boolean) => void,
+    onQuitToMainMenu?: () => void,
   ): void {
     this.onRestart = onRestart;
     this.onPauseToggle = onPauseToggle;
     this.onMuteToggle = onMuteToggle;
+    this.onQuitToMainMenu = onQuitToMainMenu;
   }
 
   private syncMuteButton(): void {
-    const muteBtn = this.root.querySelector('#btn-mute');
-    if (!muteBtn) return;
     const muted = localStorage.getItem(MUTE_KEY) === '1';
-    muteBtn.setAttribute('aria-pressed', String(muted));
-    muteBtn.textContent = muted ? '🔇' : '🔊';
+    this.root.querySelectorAll('.btn-mute').forEach((b) => {
+      b.setAttribute('aria-pressed', String(muted));
+      b.textContent = muted ? '🔇' : '🔊';
+    });
   }
 
   private syncHintBar(): void {
@@ -119,6 +133,7 @@ export class HUD {
     const n = raw ? parseInt(raw, 10) : 0;
     const best = Number.isFinite(n) ? n : 0;
     this.bestEl.textContent = String(best);
+    if (this.menuBestEl) this.menuBestEl.textContent = String(best);
     return best;
   }
 
@@ -129,6 +144,7 @@ export class HUD {
       localStorage.setItem(BEST_SCORE_KEY, String(next));
     }
     this.bestEl.textContent = String(next);
+    if (this.menuBestEl) this.menuBestEl.textContent = String(next);
     return next;
   }
 

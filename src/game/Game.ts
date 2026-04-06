@@ -30,7 +30,7 @@ import { grappleAmplitudeForScore, grappleSpeedForScore } from './difficulty';
 import { Grapple } from './Grapple';
 import type { HUD } from './HUD';
 import { Input } from './Input';
-import { spawnLandBurst, updateParticles } from './Particles';
+import { clearAllParticles, spawnLandBurst, updateParticles } from './Particles';
 import { PhysicsWorld } from './PhysicsWorld';
 
 type Placed = { mesh: Group; body: RigidBody };
@@ -59,8 +59,16 @@ export class Game {
   private lastT = performance.now();
   private pendingMaxSpeed = 0;
   private shake = 0;
+  private hasStarted = false;
+  private notifyQuitToMainMenu?: () => void;
 
-  constructor(canvas: HTMLCanvasElement, hud: HUD, app: HTMLElement) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    hud: HUD,
+    app: HTMLElement,
+    notifyQuitToMainMenu?: () => void,
+  ) {
+    this.notifyQuitToMainMenu = notifyQuitToMainMenu;
     this.hud = hud;
     this.audio = new GameAudio();
     hud.loadBest();
@@ -129,12 +137,20 @@ export class Game {
       (muted) => {
         this.audio.setMuted(muted);
       },
+      () => this.leaveToMainMenu(),
     );
 
     window.addEventListener('keydown', this.onGlobalKey);
     window.addEventListener('resize', this.onResize);
     this.onResize();
+  }
 
+  /** Begin first run (call from main menu after Play). */
+  start(): void {
+    if (this.hasStarted) return;
+    this.hasStarted = true;
+    this.lastT = performance.now();
+    this.input.consumeDrop();
     this.restart();
   }
 
@@ -147,18 +163,21 @@ export class Game {
 
   private onGlobalKey = (e: KeyboardEvent): void => {
     if (e.code === 'Escape') {
+      if (!this.hasStarted) return;
       e.preventDefault();
       this.togglePause();
     }
   };
 
   private togglePause(): void {
+    if (!this.hasStarted) return;
     if (this.phase === 'gameover') return;
     this.phase = this.phase === 'paused' ? 'playing' : 'paused';
     this.hud.setPhase(this.phase);
   }
 
-  private restart(): void {
+  /** Clear stack and reset run state without spawning a new cat (used when leaving to main menu). */
+  private clearRun(): void {
     for (const p of this.placed) {
       this.physics.removeCat(p.body);
       this.scene.remove(p.mesh);
@@ -180,8 +199,23 @@ export class Game {
     this.hud.setPhase('playing');
     this.cameraRig.reset();
     this.camera.position.set(0, initialCameraY(), 10);
+    this.camera.position.x = 0;
     this.camera.lookAt(0, this.camera.position.y, 0);
+  }
+
+  private restart(): void {
+    this.clearRun();
     this.spawnHeldCat();
+  }
+
+  private leaveToMainMenu(): void {
+    if (!this.hasStarted) return;
+    this.clearRun();
+    clearAllParticles(this.scene);
+    this.hasStarted = false;
+    this.lastT = performance.now();
+    this.input.consumeDrop();
+    this.notifyQuitToMainMenu?.();
   }
 
   private addBaseVisual(): void {
@@ -409,6 +443,10 @@ export class Game {
   }
 
   tick(): void {
+    if (!this.hasStarted) {
+      return;
+    }
+
     const now = performance.now();
     let dt = (now - this.lastT) / 1000;
     this.lastT = now;

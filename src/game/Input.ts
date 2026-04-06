@@ -11,13 +11,17 @@ export class Input {
     this.root = root;
     this.onPointerDown = (e: PointerEvent): void => {
       if (e.button !== 0) return;
+      const menu = this.root.querySelector('#main-menu') as HTMLElement | null;
+      if (menu && !menu.hidden) return;
       const t = e.target as HTMLElement | null;
-      if (t?.closest('button, [data-no-drop], .overlay')) {
+      if (t?.closest('button, [data-no-drop], .overlay, #main-menu')) {
         return;
       }
       this.dropPressed = true;
     };
     this.onKeyDown = (e: KeyboardEvent): void => {
+      const menu = this.root.querySelector('#main-menu') as HTMLElement | null;
+      if (menu && !menu.hidden) return;
       if (e.code === 'Space') {
         e.preventDefault();
         this.dropPressed = true;

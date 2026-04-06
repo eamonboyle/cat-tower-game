@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff8c42"/>
+      <stop offset="55%" style="stop-color:#ff6b35"/>
+      <stop offset="100%" style="stop-color:#c44e20"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#sky)"/>
+  <ellipse cx="400" cy="320" rx="380" ry="40" fill="#5c3d2e" opacity="0.35"/>
+  <g fill="#8b4513" opacity="0.5">
+    <rect x="40" y="200" width="50" height="120" rx="4"/>
+    <rect x="120" y="160" width="65" height="160" rx="4"/>
+    <rect x="620" y="180" width="55" height="140" rx="4"/>
+    <rect x="700" y="140" width="70" height="180" rx="4"/>
+  </g>
+  <g fill="#2a1810">
+    <ellipse cx="400" cy="260" rx="28" ry="20"/>
+    <circle cx="385" cy="248" r="8"/>
+    <circle cx="415" cy="248" r="8"/>
+    <path d="M 370 255 Q 400 275 430 255" fill="none" stroke="#2a1810" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="400" cy="230" rx="35" ry="28" fill="#3d2817"/>
+    <polygon points="365,215 375,195 385,210" fill="#3d2817"/>
+    <polygon points="435,215 425,195 415,210" fill="#3d2817"/>
+  </g>
+</svg>

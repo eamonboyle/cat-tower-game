@@ -13,8 +13,8 @@
     <title>Cat Tower</title>
   </head>
   <body>
-    <div id="app">
-      <canvas id="game-canvas" tabindex="0" aria-label="Game"></canvas>
+    <div id="app" class="app--menu">
+      <canvas id="game-canvas" tabindex="-1" aria-label="Game" inert></canvas>
       <div id="hud">
         <div id="hint-bar" class="hint-bar">
           <span>Tap or press Space to drop a cat. Stack high!</span>
@@ -32,7 +32,7 @@
             <button
               type="button"
               id="btn-mute"
-              class="icon-btn"
+              class="icon-btn btn-mute"
               aria-label="Toggle sound"
               aria-pressed="false"
             >
@@ -60,6 +60,9 @@
           <button type="button" id="btn-pause-restart" class="panel-btn secondary">
             Restart run
           </button>
+          <button type="button" id="btn-pause-mainmenu" class="panel-btn secondary">
+            Main menu
+          </button>
           <p class="hint">Escape to resume</p>
         </div>
       </div>
@@ -71,6 +74,39 @@
           <p class="go-line">Score <span id="go-score">0</span></p>
           <p class="go-line">Best <span id="go-best">0</span></p>
           <button type="button" id="go-restart" class="panel-btn primary">Play again</button>
+        </div>
+      </div>
+      <div
+        id="main-menu"
+        class="main-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="main-menu-title"
+      >
+        <div class="main-menu__hero">
+          <img
+            class="main-menu__img"
+            src="/menu-hero.svg"
+            width="800"
+            height="400"
+            alt=""
+            decoding="async"
+          />
+        </div>
+        <div class="main-menu__content">
+          <h1 id="main-menu-title" class="main-menu__title">Cat Tower</h1>
+          <p class="main-menu__tagline">Stack cats. Beat your best.</p>
+          <p class="main-menu__best">Best <span id="menu-best">0</span></p>
+          <button type="button" id="btn-play" class="panel-btn primary main-menu__play">Play</button>
+          <button
+            type="button"
+            id="btn-menu-mute"
+            class="icon-btn btn-mute main-menu__mute"
+            aria-label="Toggle sound"
+            aria-pressed="false"
+          >
+            🔊
+          </button>
         </div>
       </div>
     </div>
