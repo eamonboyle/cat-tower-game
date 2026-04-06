@@ -17,11 +17,14 @@ import { GameAudio } from './Audio';
 import { createCatMesh } from './Cat';
 import { CameraRig, initialCameraY, stackBaselineY } from './CameraRig';
 import {
+  CAT_HALF_H,
   CENTER_BONUS_DIST,
   COMBO_CAP,
   FOREGROUND_Z,
   KILL_Y,
+  MIN_STACK_RISE,
   OUT_X,
+  PLATFORM_TOP_Y,
   REST_ANG_EPS,
   REST_FRAMES_NEEDED,
   REST_LIN_EPS,
@@ -396,7 +399,26 @@ export class Game {
     }
 
     if (this.restFrames >= REST_FRAMES_NEEDED) {
-      const t = this.pendingBody.translation();
+      const pending = this.pendingBody;
+      const t = pending.translation();
+      const others = this.placed.filter((p) => p.body !== pending);
+      const newTop = t.y + CAT_HALF_H;
+      let maxOtherTop = PLATFORM_TOP_Y;
+      for (const p of others) {
+        maxOtherTop = Math.max(maxOtherTop, p.body.translation().y + CAT_HALF_H);
+      }
+      const isFirstCat = others.length === 0;
+      const validStack =
+        isFirstCat || newTop >= maxOtherTop + MIN_STACK_RISE;
+
+      if (!validStack) {
+        this.pendingBody = null;
+        this.pendingMaxSpeed = 0;
+        this.restFrames = 0;
+        this.gameOver();
+        return;
+      }
+
       const centerX =
         this.placed.length >= 2
           ? this.placed[this.placed.length - 2]!.body.translation().x

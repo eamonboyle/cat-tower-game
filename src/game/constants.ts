@@ -8,6 +8,9 @@ export const PLATFORM_TOP_Y = 0;
 export const CAT_HALF_W = 0.46;
 export const CAT_HALF_H = 0.3;
 
+/** Min height gain (world Y) for a new cat's top vs current tower top; blocks same-level piles */
+export const MIN_STACK_RISE = 0.1;
+
 /** Gameplay meshes sit slightly in front of background for clean depth sorting */
 export const FOREGROUND_Z = 0.15;
 
