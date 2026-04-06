@@ -4,6 +4,14 @@ import {
   MUTE_KEY,
 } from './constants';
 
+export type GameOverReason = 'stack' | 'fall' | 'out';
+
+const GAME_OVER_REASON_COPY: Record<GameOverReason, string> = {
+  stack: 'Each new cat must land higher on the tower than the last.',
+  fall: 'You fell off the bottom!',
+  out: 'You fell off the side!',
+};
+
 export class HUD {
   private root: HTMLElement;
   private scoreEl: HTMLElement;
@@ -13,6 +21,7 @@ export class HUD {
   private finalScoreEl: HTMLElement;
   private finalBestEl: HTMLElement;
   private newBestEl: HTMLElement;
+  private goReasonEl: HTMLElement;
   private toastEl: HTMLElement;
   private hintBar: HTMLElement;
   private menuBestEl: HTMLElement | null;
@@ -31,6 +40,7 @@ export class HUD {
     this.finalScoreEl = root.querySelector('#go-score')!;
     this.finalBestEl = root.querySelector('#go-best')!;
     this.newBestEl = root.querySelector('#go-newbest')!;
+    this.goReasonEl = root.querySelector('#go-reason')!;
     this.toastEl = root.querySelector('#score-toast')!;
     this.hintBar = root.querySelector('#hint-bar')!;
     this.menuBestEl = root.querySelector('#menu-best');
@@ -167,6 +177,10 @@ export class HUD {
     this.pauseOverlay.setAttribute('aria-hidden', String(!paused));
     this.gameOverEl.setAttribute('aria-hidden', String(!over));
 
+    if (!over) {
+      this.goReasonEl.hidden = true;
+    }
+
     const block = paused || over;
     this.canvas.inert = block;
     if (block) {
@@ -176,10 +190,17 @@ export class HUD {
     }
   }
 
-  showGameOver(score: number, best: number, isNewBest: boolean): void {
+  showGameOver(
+    score: number,
+    best: number,
+    isNewBest: boolean,
+    reason: GameOverReason,
+  ): void {
     this.finalScoreEl.textContent = String(score);
     this.finalBestEl.textContent = String(best);
     this.newBestEl.hidden = !isNewBest;
+    this.goReasonEl.textContent = GAME_OVER_REASON_COPY[reason];
+    this.goReasonEl.hidden = false;
     this.setPhase('gameover');
   }
 }

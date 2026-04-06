@@ -5,8 +5,6 @@ import { HUD } from './game/HUD';
 import { readMenuBest } from './menuBest';
 
 async function main(): Promise<void> {
-  await RAPIER.init();
-
   const app = document.querySelector<HTMLElement>('#app');
   const canvas = document.querySelector<HTMLCanvasElement>('#game-canvas');
   const mainMenu = document.querySelector<HTMLElement>('#main-menu');
@@ -30,26 +28,39 @@ async function main(): Promise<void> {
   };
 
   const hud = new HUD(app);
-  const game = new Game(canvas, hud, app, () => {
-    showMainMenu();
-    hud.loadBest();
-    btnPlay?.focus();
-  });
+  let game: Game | null = null;
+  let booting = false;
 
   const loop = (): void => {
-    game.tick();
+    if (game) {
+      game.tick();
+    }
     requestAnimationFrame(loop);
   };
   requestAnimationFrame(loop);
 
-  btnPlay?.addEventListener('click', () => {
-    app.classList.remove('app--menu');
-    mainMenu.hidden = true;
-    mainMenu.setAttribute('aria-hidden', 'true');
-    canvas.removeAttribute('inert');
-    canvas.tabIndex = 0;
-    game.start();
-    canvas.focus();
+  btnPlay?.addEventListener('click', async () => {
+    if (booting) return;
+    booting = true;
+    try {
+      if (!game) {
+        await RAPIER.init();
+        game = new Game(canvas, hud, app, () => {
+          showMainMenu();
+          hud.loadBest();
+          btnPlay?.focus();
+        });
+      }
+      app.classList.remove('app--menu');
+      mainMenu.hidden = true;
+      mainMenu.setAttribute('aria-hidden', 'true');
+      canvas.removeAttribute('inert');
+      canvas.tabIndex = 0;
+      game.start();
+      canvas.focus();
+    } finally {
+      booting = false;
+    }
   });
 }
 

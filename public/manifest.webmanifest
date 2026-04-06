@@ -1,0 +1,17 @@
+{
+  "name": "Cat Tower",
+  "short_name": "Cat Tower",
+  "description": "Stack cats with a swinging crane. Beat your best score!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#bae6fd",
+  "theme_color": "#ff6b9d",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

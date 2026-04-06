@@ -34,7 +34,7 @@ import {
 } from './constants';
 import { grappleAmplitudeForScore, grappleSpeedForScore } from './difficulty';
 import { Grapple } from './Grapple';
-import type { HUD } from './HUD';
+import type { GameOverReason, HUD } from './HUD';
 import { Input } from './Input';
 import { clearAllParticles, spawnLandBurst, updateParticles } from './Particles';
 import { PhysicsWorld } from './PhysicsWorld';
@@ -420,7 +420,8 @@ export class Game {
     this.heldCat.position.set(gx, gy, FOREGROUND_Z);
   }
 
-  private checkFail(): boolean {
+  /** Returns a fail reason if any cat is out of bounds, else null. */
+  private checkFail(): GameOverReason | null {
     const bodies = this.pendingBody
       ? [...this.placed.map((p) => p.body), this.pendingBody]
       : this.placed.map((p) => p.body);
@@ -428,10 +429,10 @@ export class Game {
     for (const b of bodies) {
       if (!b.isValid()) continue;
       const t = b.translation();
-      if (t.y < KILL_Y) return true;
-      if (Math.abs(t.x) > OUT_X) return true;
+      if (t.y < KILL_Y) return 'fall';
+      if (Math.abs(t.x) > OUT_X) return 'out';
     }
-    return false;
+    return null;
   }
 
   private addShake(amount: number): void {
@@ -488,7 +489,7 @@ export class Game {
         this.pendingBody = null;
         this.pendingMaxSpeed = 0;
         this.restFrames = 0;
-        this.gameOver();
+        this.gameOver('stack');
         return;
       }
 
@@ -528,12 +529,12 @@ export class Game {
     }
   }
 
-  private gameOver(): void {
+  private gameOver(reason: GameOverReason): void {
     const prevBest = this.hud.getBest();
     this.phase = 'gameover';
     const best = this.hud.saveBestIfNeeded(this.score);
     const isNewBest = this.score > prevBest;
-    this.hud.showGameOver(this.score, best, isNewBest);
+    this.hud.showGameOver(this.score, best, isNewBest, reason);
     this.audio.playGameOver();
   }
 
@@ -559,8 +560,9 @@ export class Game {
       this.physics.step();
       this.syncPlacedMeshes();
 
-      if (this.checkFail()) {
-        this.gameOver();
+      const failReason = this.checkFail();
+      if (failReason !== null) {
+        this.gameOver(failReason);
         this.camera.position.x = 0;
         this.cameraRig.setStackTopY(this.highestStackY());
         this.cameraRig.update(this.camera, dt);
