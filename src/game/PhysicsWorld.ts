@@ -1,7 +1,9 @@
 import RAPIER, { type RigidBody } from '@dimforge/rapier2d-compat';
 import {
-  CAT_HALF_H,
-  CAT_HALF_W,
+  CAT_PHYSICS_HALF_H,
+  CAT_PHYSICS_HALF_W,
+  CAT_PHYSICS_OFFSET_X,
+  CAT_PHYSICS_OFFSET_Y,
   GRAVITY,
   PHYSICS_DT,
   PLATFORM_HALF_HEIGHT,
@@ -37,7 +39,11 @@ export class PhysicsWorld {
       .setLinearDamping(0.28)
       .setAngularDamping(2.2);
     const body = this.world.createRigidBody(bodyDesc);
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(CAT_HALF_W, CAT_HALF_H)
+    const colliderDesc = RAPIER.ColliderDesc.cuboid(
+      CAT_PHYSICS_HALF_W,
+      CAT_PHYSICS_HALF_H,
+    )
+      .setTranslation(CAT_PHYSICS_OFFSET_X, CAT_PHYSICS_OFFSET_Y)
       .setFriction(1.45)
       .setRestitution(0.04);
     this.world.createCollider(colliderDesc, body);

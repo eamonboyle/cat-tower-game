@@ -390,7 +390,7 @@ export class Game {
     let maxY = stackBaselineY();
     for (const p of this.placed) {
       if (!p.body.isValid()) continue;
-      maxY = Math.max(maxY, p.body.translation().y + 0.35);
+      maxY = Math.max(maxY, p.body.translation().y + CAT_HALF_H);
     }
     return maxY;
   }

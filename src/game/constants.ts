@@ -5,8 +5,20 @@ export const PLATFORM_HALF_WIDTH = 2.85;
 export const PLATFORM_HALF_HEIGHT = 0.4;
 export const PLATFORM_TOP_Y = 0;
 
-export const CAT_HALF_W = 0.46;
-export const CAT_HALF_H = 0.3;
+/**
+ * Cat rigid body uses one offset box that covers the full mesh (torso + head) in all poses.
+ * Center of the box is offset from the mesh origin (body center) so the head participates in contact.
+ */
+export const CAT_PHYSICS_HALF_W = 0.57;
+export const CAT_PHYSICS_HALF_H = 0.41;
+export const CAT_PHYSICS_OFFSET_X = 0.13;
+export const CAT_PHYSICS_OFFSET_Y = 0.15;
+
+/**
+ * World Y from rigid-body translation (body center) to top of silhouette — stack scoring / max height.
+ * Must match top of physics box: OFFSET_Y + HALF_H.
+ */
+export const CAT_HALF_H = CAT_PHYSICS_OFFSET_Y + CAT_PHYSICS_HALF_H;
 
 /** Min height gain (world Y) for a new cat's top vs current tower top; blocks same-level piles */
 export const MIN_STACK_RISE = 0.1;
