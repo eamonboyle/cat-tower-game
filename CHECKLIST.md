@@ -40,5 +40,13 @@
 - [x] Game over panel + restart
 - [x] Procedural cat meshes (body / head / ears)
 - [x] Camera follow stack (smooth)
-- [ ] Mobile safe-area tweaks (optional)
-- [ ] Sound effects (optional)
+- [x] Mobile safe-area tweaks (optional)
+- [x] Sound effects (optional)
+
+## Phase 7 — Polish roadmap
+
+- [x] Held-cat depth / HUD overlay accessibility (`inert`, `aria-hidden`)
+- [x] Screen shake, particles on land, Web Audio SFX, mute, reduced-motion guard
+- [x] Difficulty ramp; centered bonus + combo scoring; score toasts
+- [x] PCF soft shadows, fog, parallax background, toon cats + eyes/whiskers
+- [x] Nunito typography, score pills, pause SVG, hint bar, pause restart, safe-area CSS

@@ -16,7 +16,7 @@ async function main(): Promise<void> {
 
   // HUD queries overlays (#pause-overlay, #gameover) that are siblings of #hud under #app.
   const hud = new HUD(app);
-  const game = new Game(canvas, hud);
+  const game = new Game(canvas, hud, app);
 
   const loop = (): void => {
     game.tick();
