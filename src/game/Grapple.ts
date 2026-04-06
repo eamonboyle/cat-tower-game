@@ -3,9 +3,15 @@ import {
   CylinderGeometry,
   Group,
   Mesh,
-  MeshStandardMaterial,
+  MeshToonMaterial,
   TorusGeometry,
 } from 'three';
+import {
+  INK,
+  LEMON,
+  LEMON_DEEP,
+  getSharedToonGradient,
+} from './visualTheme';
 
 export class Grapple {
   readonly group: Group;
@@ -15,30 +21,50 @@ export class Grapple {
 
   constructor() {
     this.group = new Group();
+    const gradientMap = getSharedToonGradient();
 
-    const stripeMat = new MeshStandardMaterial({ color: 0xf2c400, roughness: 0.5 });
-    const darkMat = new MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6 });
+    const winchMat = new MeshToonMaterial({
+      color: LEMON,
+      gradientMap,
+    });
+    const bandMat = new MeshToonMaterial({
+      color: LEMON_DEEP,
+      gradientMap,
+    });
+    const darkMat = new MeshToonMaterial({
+      color: INK,
+      gradientMap,
+    });
 
-    const winch = new Mesh(new CylinderGeometry(0.22, 0.26, 0.28, 16), stripeMat);
+    const winch = new Mesh(new CylinderGeometry(0.22, 0.26, 0.28, 20), winchMat);
     winch.rotation.z = Math.PI / 2;
     winch.position.set(0, 0, 0);
     winch.castShadow = true;
     this.group.add(winch);
 
-    const cableGeo = new CylinderGeometry(0.04, 0.04, 1, 8);
+    const band = new Mesh(new CylinderGeometry(0.24, 0.28, 0.1, 20), bandMat);
+    band.rotation.z = Math.PI / 2;
+    band.position.set(0, 0, 0);
+    band.castShadow = true;
+    this.group.add(band);
+
+    const cableGeo = new CylinderGeometry(0.045, 0.045, 1, 10);
     this.cable = new Mesh(cableGeo, darkMat);
     this.cable.position.set(0, -0.5, 0);
     this.group.add(this.cable);
 
     this.hook = new Group();
-    const clawMat = new MeshStandardMaterial({ color: 0x6b6b6b, metalness: 0.35, roughness: 0.45 });
+    const clawMat = new MeshToonMaterial({
+      color: 0x8b7a9e,
+      gradientMap,
+    });
     const jaw = new Mesh(new BoxGeometry(0.14, 0.2, 0.08), clawMat);
     jaw.position.set(-0.08, -0.12, 0);
     this.hook.add(jaw);
     const jaw2 = new Mesh(new BoxGeometry(0.14, 0.2, 0.08), clawMat);
     jaw2.position.set(0.08, -0.12, 0);
     this.hook.add(jaw2);
-    const ring = new Mesh(new TorusGeometry(0.1, 0.03, 8, 12), clawMat);
+    const ring = new Mesh(new TorusGeometry(0.1, 0.03, 10, 16), clawMat);
     ring.rotation.x = Math.PI / 2;
     ring.position.set(0, 0.06, 0);
     this.hook.add(ring);

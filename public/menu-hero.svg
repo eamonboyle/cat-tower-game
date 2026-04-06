@@ -1,26 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
   <defs>
     <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff8c42"/>
-      <stop offset="55%" style="stop-color:#ff6b35"/>
-      <stop offset="100%" style="stop-color:#c44e20"/>
+      <stop offset="0%" style="stop-color:#bae6fd"/>
+      <stop offset="55%" style="stop-color:#fbcfe8"/>
+      <stop offset="100%" style="stop-color:#fde68a"/>
     </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
   <rect width="800" height="400" fill="url(#sky)"/>
-  <ellipse cx="400" cy="320" rx="380" ry="40" fill="#5c3d2e" opacity="0.35"/>
-  <g fill="#8b4513" opacity="0.5">
-    <rect x="40" y="200" width="50" height="120" rx="4"/>
-    <rect x="120" y="160" width="65" height="160" rx="4"/>
-    <rect x="620" y="180" width="55" height="140" rx="4"/>
-    <rect x="700" y="140" width="70" height="180" rx="4"/>
+  <ellipse cx="400" cy="330" rx="360" ry="36" fill="#3d2f4a" opacity="0.12"/>
+  <g opacity="0.85">
+    <rect x="32" y="195" width="48" height="125" rx="6" fill="#f9a8d4" stroke="#3d2f4a" stroke-width="3"/>
+    <rect x="108" y="155" width="62" height="165" rx="6" fill="#93c5fd" stroke="#3d2f4a" stroke-width="3"/>
+    <rect x="188" y="175" width="55" height="145" rx="6" fill="#86efac" stroke="#3d2f4a" stroke-width="3"/>
+    <rect x="612" y="168" width="58" height="152" rx="6" fill="#fde68a" stroke="#3d2f4a" stroke-width="3"/>
+    <rect x="692" y="138" width="68" height="182" rx="6" fill="#c4b5fd" stroke="#3d2f4a" stroke-width="3"/>
   </g>
-  <g fill="#2a1810">
-    <ellipse cx="400" cy="260" rx="28" ry="20"/>
-    <circle cx="385" cy="248" r="8"/>
-    <circle cx="415" cy="248" r="8"/>
-    <path d="M 370 255 Q 400 275 430 255" fill="none" stroke="#2a1810" stroke-width="4" stroke-linecap="round"/>
-    <ellipse cx="400" cy="230" rx="35" ry="28" fill="#3d2817"/>
-    <polygon points="365,215 375,195 385,210" fill="#3d2817"/>
-    <polygon points="435,215 425,195 415,210" fill="#3d2817"/>
+  <g filter="url(#soft)">
+    <ellipse cx="400" cy="258" rx="30" ry="22" fill="#ff6b9d" stroke="#3d2f4a" stroke-width="4"/>
+    <circle cx="384" cy="246" r="9" fill="#ffffff" stroke="#3d2f4a" stroke-width="2"/>
+    <circle cx="416" cy="246" r="9" fill="#ffffff" stroke="#3d2f4a" stroke-width="2"/>
+    <circle cx="386" cy="248" r="5" fill="#3d2f4a"/>
+    <circle cx="418" cy="248" r="5" fill="#3d2f4a"/>
+    <circle cx="390" cy="246" r="2" fill="#ffffff"/>
+    <circle cx="422" cy="246" r="2" fill="#ffffff"/>
+    <path d="M 372 254 Q 400 272 428 254" fill="none" stroke="#3d2f4a" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="400" cy="228" rx="38" ry="30" fill="#ff6b9d" stroke="#3d2f4a" stroke-width="4"/>
+    <polygon points="362,210 374,186 388,204" fill="#ff6b9d" stroke="#3d2f4a" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="438,210 426,186 412,204" fill="#ff6b9d" stroke="#3d2f4a" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="368" cy="262" rx="8" ry="6" fill="#e84a84" opacity="0.9"/>
+    <ellipse cx="432" cy="262" rx="8" ry="6" fill="#e84a84" opacity="0.9"/>
   </g>
 </svg>

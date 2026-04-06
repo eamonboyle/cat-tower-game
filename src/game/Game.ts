@@ -2,7 +2,9 @@ import type { RigidBody } from '@dimforge/rapier2d-compat';
 import {
   AmbientLight,
   BoxGeometry,
+  Color,
   DirectionalLight,
+  DoubleSide,
   Fog,
   Group,
   Mesh,
@@ -11,6 +13,7 @@ import {
   PCFSoftShadowMap,
   PlaneGeometry,
   Scene,
+  ShaderMaterial,
   WebGLRenderer,
 } from 'three';
 import { GameAudio } from './Audio';
@@ -35,6 +38,13 @@ import type { HUD } from './HUD';
 import { Input } from './Input';
 import { clearAllParticles, spawnLandBurst, updateParticles } from './Particles';
 import { PhysicsWorld } from './PhysicsWorld';
+import {
+  BUILDING_PRESETS,
+  INK,
+  LEMON_DEEP,
+  MINT_DEEP,
+  SKY,
+} from './visualTheme';
 
 type Placed = { mesh: Group; body: RigidBody };
 
@@ -89,7 +99,7 @@ export class Game {
     this.renderer.shadowMap.type = PCFSoftShadowMap;
 
     this.scene = new Scene();
-    this.scene.fog = new Fog(0xff9a4a, 12, 52);
+    this.scene.fog = new Fog(0xc4e9ff, 10, 48);
 
     const aspect = canvas.clientWidth / Math.max(canvas.clientHeight, 1);
     const frustum = 11;
@@ -104,9 +114,9 @@ export class Game {
     this.camera.position.set(0, initialCameraY(), 10);
     this.camera.lookAt(0, this.camera.position.y, 0);
 
-    const ambient = new AmbientLight(0xffffff, 0.42);
+    const ambient = new AmbientLight(0xf0f4ff, 0.55);
     this.scene.add(ambient);
-    const sun = new DirectionalLight(0xfff5e0, 1.45);
+    const sun = new DirectionalLight(0xfff8e8, 1.35);
     sun.position.set(5, 16, 10);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
@@ -222,44 +232,107 @@ export class Game {
   }
 
   private addBaseVisual(): void {
-    const mat = new MeshStandardMaterial({ color: 0x6b5344, roughness: 0.82 });
-    const top = new Mesh(new BoxGeometry(5.8, 0.15, 1.2), mat);
+    const topMat = new MeshStandardMaterial({
+      color: 0xfffbeb,
+      roughness: 0.55,
+      metalness: 0.05,
+    });
+    const top = new Mesh(new BoxGeometry(5.8, 0.15, 1.2), topMat);
     top.position.set(0, 0.08, FOREGROUND_Z);
     top.receiveShadow = true;
     top.castShadow = true;
     top.renderOrder = 1;
     this.scene.add(top);
 
-    const stripe = new MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.85 });
-    const bar = new Mesh(new BoxGeometry(5.9, 0.22, 1.25), stripe);
+    const rimMat = new MeshStandardMaterial({
+      color: MINT_DEEP,
+      roughness: 0.45,
+    });
+    const rim = new Mesh(new BoxGeometry(5.95, 0.06, 1.32), rimMat);
+    rim.position.set(0, 0.01, FOREGROUND_Z);
+    rim.receiveShadow = true;
+    rim.castShadow = true;
+    rim.renderOrder = 1;
+    this.scene.add(rim);
+
+    const barMat = new MeshStandardMaterial({
+      color: INK,
+      roughness: 0.75,
+    });
+    const bar = new Mesh(new BoxGeometry(5.9, 0.22, 1.25), barMat);
     bar.position.set(0, -0.18, FOREGROUND_Z);
     bar.receiveShadow = true;
     bar.renderOrder = 1;
     this.scene.add(bar);
+
+    const stripeMat = new MeshStandardMaterial({
+      color: LEMON_DEEP,
+      roughness: 0.5,
+      emissive: LEMON_DEEP,
+      emissiveIntensity: 0.08,
+    });
+    const stripe = new Mesh(new BoxGeometry(5.92, 0.04, 1.26), stripeMat);
+    stripe.position.set(0, -0.29, FOREGROUND_Z);
+    stripe.receiveShadow = true;
+    stripe.renderOrder = 1;
+    this.scene.add(stripe);
   }
 
   private addBackground(): void {
-    const skyMat = new MeshStandardMaterial({
-      color: 0xff7a3d,
-      roughness: 1,
-      emissive: 0x441800,
-      emissiveIntensity: 0.12,
+    const skyUniforms = {
+      topColor: { value: new Color(0xbae6fd) },
+      bottomColor: { value: new Color(0xfbcfe8) },
+    };
+    const skyMat = new ShaderMaterial({
+      uniforms: skyUniforms,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 topColor;
+        uniform vec3 bottomColor;
+        varying vec2 vUv;
+        void main() {
+          vec3 c = mix(bottomColor, topColor, vUv.y);
+          gl_FragColor = vec4(c, 1.0);
+        }
+      `,
+      side: DoubleSide,
     });
     const sky = new Mesh(new PlaneGeometry(48, 28), skyMat);
     sky.position.set(0, 8, -14);
     sky.renderOrder = -10;
     this.backgroundRoot.add(sky);
 
-    const cityMat = new MeshStandardMaterial({ color: 0xc84e20, roughness: 1 });
     for (let i = 0; i < 14; i++) {
       const w = 0.55 + Math.random() * 1.1;
       const h = 2.2 + Math.random() * 9;
+      const pastel = BUILDING_PRESETS[i % BUILDING_PRESETS.length]!;
+      const cityMat = new MeshStandardMaterial({
+        color: pastel,
+        roughness: 0.88,
+        metalness: 0.02,
+      });
       const b = new Mesh(new BoxGeometry(w, h, 0.45), cityMat);
       b.position.set(-12 + i * 1.75 + Math.random() * 0.35, h * 0.5 - 1.2, -12);
       b.renderOrder = -10;
       b.castShadow = true;
       this.backgroundRoot.add(b);
     }
+
+    const groundMat = new MeshStandardMaterial({
+      color: new Color(SKY).multiplyScalar(0.55),
+      roughness: 1,
+    });
+    const ground = new Mesh(new PlaneGeometry(56, 14), groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.set(0, -2.4, -12);
+    ground.renderOrder = -11;
+    this.backgroundRoot.add(ground);
   }
 
   private onResize = (): void => {

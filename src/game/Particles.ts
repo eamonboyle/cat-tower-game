@@ -31,7 +31,14 @@ export function spawnLandBurst(
     vel[i * 3] = (Math.random() - 0.5) * 2.2;
     vel[i * 3 + 1] = 1.2 + Math.random() * 2.5;
     vel[i * 3 + 2] = (Math.random() - 0.5) * 0.8;
-    c.setHSL(0.07 + Math.random() * 0.07, 0.85, 0.52 + Math.random() * 0.2);
+    const hueRoll = Math.random();
+    if (hueRoll < 0.33) {
+      c.setHSL(0.92 + Math.random() * 0.06, 0.75, 0.58 + Math.random() * 0.15);
+    } else if (hueRoll < 0.66) {
+      c.setHSL(0.55 + Math.random() * 0.08, 0.8, 0.55 + Math.random() * 0.12);
+    } else {
+      c.setHSL(0.08 + Math.random() * 0.06, 0.88, 0.55 + Math.random() * 0.15);
+    }
     colors[i * 3] = c.r;
     colors[i * 3 + 1] = c.g;
     colors[i * 3 + 2] = c.b;
