@@ -528,6 +528,17 @@ body::before {
   );
 }
 
+.go-reason {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  max-width: 18rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .go-line {
   margin: 8px 0;
   font-size: 1.1rem;

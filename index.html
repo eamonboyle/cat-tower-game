@@ -4,6 +4,33 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Stack cats with a swinging crane in this browser physics game. Beat your best score—each cat must land higher than the last!"
+    />
+    <meta name="theme-color" content="#ff6b9d" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Cat Tower" />
+    <meta
+      property="og:description"
+      content="Stack cats with a swinging crane. Beat your best score—each cat must land higher than the last!"
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/eamonboyle/cat-tower-game/main/assets/screenshots/menu.png"
+    />
+    <meta property="og:url" content="https://github.com/eamonboyle/cat-tower-game" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cat Tower" />
+    <meta
+      name="twitter:description"
+      content="Stack cats with a swinging crane. Beat your best score!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://raw.githubusercontent.com/eamonboyle/cat-tower-game/main/assets/screenshots/menu.png"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -70,6 +97,7 @@
         <div class="panel gameover-panel">
           <div class="hazard-strip" aria-hidden="true"></div>
           <h2>Game over</h2>
+          <p id="go-reason" class="go-reason" hidden></p>
           <p id="go-newbest" class="new-best" hidden>New best!</p>
           <p class="go-line">Score <span id="go-score">0</span></p>
           <p class="go-line">Best <span id="go-best">0</span></p>
